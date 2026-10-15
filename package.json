@@ -1,12 +1,10 @@
 {
   "name": "missti-telegram-ai-bot",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "Missti Telegram AI chatbot with Firebase memory and Vercel webhook",
-  "engines": {
-    "node": ">=18"
-  },
+  "description": "Missti Telegram AI chatbot",
+  "main": "api/webhook.js",
   "dependencies": {
-    "firebase-admin": "^13.5.0"
+    "firebase-admin": "^13.0.2"
   }
 }
