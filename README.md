@@ -1,6 +1,6 @@
 # Missti — Naughty AI Girlfriend Telegram Bot
 
-**Grok + Firebase** powered Hinglish AI Girlfriend bot  
+**Groq + Firebase** powered Hinglish AI Girlfriend bot  
 Modular codebase • Multi-platform ready
 
 ---
@@ -28,7 +28,7 @@ Modular codebase • Multi-platform ready
 │   ├── config.js           ← Env + constants
 │   ├── firebase.js         ← Database helpers
 │   ├── telegram.js         ← Telegram API helpers
-│   ├── ai.js               ← Grok API call
+│   ├── ai.js               ← Groq API call
 │   └── admin.js            ← All admin commands
 ├── prompts/
 │   └── system.js           ← Bot personality prompt (yahan edit karo)
@@ -47,14 +47,14 @@ Modular codebase • Multi-platform ready
 | Variable | Required | Description |
 |----------|----------|-------------|
 | `BOT_TOKEN` | ✅ | @BotFather se |
-| `GROK_API_KEY` | ✅ | https://console.x.ai |
+| `GROQ_API_KEY` | ✅ | https://console.groq.com/keys |
 | `OWNER_ID` | ✅ | Tera Telegram numeric ID |
 | `FIREBASE_DATABASE_URL` | ✅ | Firebase RTDB URL |
 | `FIREBASE_SERVICE_ACCOUNT_JSON` | ✅ | Poora service account JSON |
 | `BOT_NAME` | ❌ | Default: Missti |
 | `LOGGER_ID` | ❌ | Logger channel ID |
 | `SUPPORT_URL` | ❌ | Support link |
-| `GROK_MODEL` | ❌ | Override model |
+| `GROQ_MODEL` | ❌ | Override model |
 | `TELEGRAM_WEBHOOK_SECRET` | ❌ | Extra security |
 | `PORT` | ❌ | Default 3000 (VPS/Render) |
 
