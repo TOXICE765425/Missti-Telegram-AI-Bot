@@ -7,3 +7,5 @@ serviceAccount*.json
 .vercel
 dist/
 build/
+.idea/
+.vscode/

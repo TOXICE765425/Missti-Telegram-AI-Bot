@@ -1,178 +1,193 @@
 # Missti — Naughty AI Girlfriend Telegram Bot
 
-Powered by **xAI Grok** + **Firebase Realtime Database**  
-Works on **Vercel • Render • Railway • VPS • any Node.js host**
+**Grok + Firebase** powered Hinglish AI Girlfriend bot  
+Modular codebase • Multi-platform ready
 
 ---
 
 ## ✨ Features
 
-### Personality
-- Full AI Girlfriend vibe — naughty, attitude, possessive, caring
-- Natural Hinglish / Hindi / English
-- **Never** reveals she is AI
-- Remembers previous conversation perfectly
-- If user abuses (gali), bot also replies with attitude + remembers the exact words
-- When user apologizes & asks “maine kya gali di thi”, bot recalls the exact word
+- Full **AI Girlfriend** personality (naughty, attitude, possessive)
+- Kabhi nahi bolti ki woh AI hai
+- Private: 30 messages memory (rolling)
+- Group: 20 messages per user memory
+- Group mein sirf tag / reply / greeting pe reply (12-15 words max)
+- Gali system + exact memory
+- Full Admin Panel (`/admin`)
+- Logger channel (errors + join/leave + block)
+- `/start` with user DP + buttons
 
-### Memory (Firebase RTDB)
-| Mode     | Limit | Behaviour                          |
-|----------|-------|------------------------------------|
-| Private  | 30    | Oldest messages auto-deleted       |
-| Group    | 20    | Per-user rolling window            |
+---
 
-### Group Behaviour
-- Replies **only** when:
-  - User tags the bot
-  - User replies to bot’s message
-  - User says: hello, hey, hii, good morning, good night, good evening, kaise ho, etc.
-- Max **12-15 words**, complete thought (no cut-off)
+## 📁 Project Structure
 
-### Private Chat
-- Unlimited length emotional replies
-
-### Admin Panel (`/admin` — Owner only)
 ```
-🛠 Admin Panel
-
-👥 Users / Groups
-• /user
-• /group
-
-📢 Broadcast
-• /broadcast msg
-• /broadcast chat_id msg
-• /ubroadcast msg
-• /ubroadcast user_id msg
-• reply + /broadcast or /ubroadcast
-
-🚫 Block
-• /block user_id
-• /unblock user_id
-• /gblock group_id [reason]
-• /gunblock group_id
-
-⏻ Bot power
-• /bot on|off
-• /gbot on|off
-
-📊 Stats
-• /stats
-• /stats user_id
-• /stats -100xxx
-
-🧠 Memory
-• /kill memory
-• /kill memory chat_id
-• /ukill memory
-• /ukill memory user_id
-• /kill all
+├── api/
+│   └── webhook.js          ← Vercel entry + main handler
+├── lib/
+│   ├── config.js           ← Env + constants
+│   ├── firebase.js         ← Database helpers
+│   ├── telegram.js         ← Telegram API helpers
+│   ├── ai.js               ← Grok API call
+│   └── admin.js            ← All admin commands
+├── prompts/
+│   └── system.js           ← Bot personality prompt (yahan edit karo)
+├── server.js               ← For Render / Railway / VPS
+├── package.json
+├── vercel.json
+├── render.yaml
+├── railway.json
+└── .env.example
 ```
-
-### Logger Channel
-- Every error with full traceback + user info
-- Bot added to new group (photo + details)
-- Bot removed from group
-- User blocked / unblocked
-- Broadcast logs
 
 ---
 
 ## 🔑 Environment Variables
 
-| Variable                        | Required | Description                                      |
-|--------------------------------|----------|--------------------------------------------------|
-| `BOT_TOKEN`                    | ✅       | From @BotFather                                  |
-| `GROK_API_KEY`                 | ✅       | xAI API Key (https://console.x.ai)               |
-| `BOT_NAME`                     | ❌       | Default: `Missti`                                |
-| `OWNER_ID`                     | ✅       | Your Telegram numeric user ID                    |
-| `LOGGER_ID`                    | ❌       | Channel / group ID for logs (recommend channel)  |
-| `SUPPORT_URL`                  | ❌       | Support group/channel link                       |
-| `FIREBASE_DATABASE_URL`        | ✅       | Firebase Realtime Database URL                   |
-| `FIREBASE_SERVICE_ACCOUNT_JSON`| ✅       | Full service account JSON as string              |
-| `GROK_MODEL`                   | ❌       | Override model (default uses first from list)    |
-| `TELEGRAM_WEBHOOK_SECRET`      | ❌       | Extra webhook security                           |
-
-### Hardcoded Grok Models
-```js
-[
-  "grok-2-1212",
-  "grok-2```
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `BOT_TOKEN` | ✅ | @BotFather se |
+| `GROK_API_KEY` | ✅ | https://console.x.ai |
+| `OWNER_ID` | ✅ | Tera Telegram numeric ID |
+| `FIREBASE_DATABASE_URL` | ✅ | Firebase RTDB URL |
+| `FIREBASE_SERVICE_ACCOUNT_JSON` | ✅ | Poora service account JSON |
+| `BOT_NAME` | ❌ | Default: Missti |
+| `LOGGER_ID` | ❌ | Logger channel ID |
+| `SUPPORT_URL` | ❌ | Support link |
+| `GROK_MODEL` | ❌ | Override model |
+| `TELEGRAM_WEBHOOK_SECRET` | ❌ | Extra security |
+| `PORT` | ❌ | Default 3000 (VPS/Render) |
 
 ---
 
-## 🚀 Deployment
+## 🚀 Deployment Guides
 
-### 1. Vercel (Recommended)
-1. Push repo to GitHub
-2. Import in Vercel
-3. Add all Environment Variables
+### 1. Vercel (Serverless)
+
+1. GitHub pe repo push karo
+2. [vercel.com](https://vercel.com) → Import project
+3. Environment Variables add karo
 4. Deploy
-5. Set webhook:
+5. Webhook set karo:
+
 ```bash
-curl "https://api.telegram.org/bot<BOT_TOKEN>/setWebhook?url=https://YOUR-PROJECT.vercel.app/api/webhook"
+https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://YOUR-PROJECT.vercel.app/api/webhook
 ```
+
+> **Note:** Vercel pe Deployment Protection band rakho (Settings → Deployment Protection → Disabled)
+
+---
 
 ### 2. Render
-- New → Web Service
-- Build: `npm install`
-- Start: `node api/webhook.js` (or use their Node detection)
-- Better to use a small Express wrapper if needed, or keep as serverless-style.
+
+1. [render.com](https://render.com) → New → Web Service
+2. Repo connect karo
+3. Settings:
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+4. Environment Variables add karo
+5. Deploy
+6. Webhook:
+
+```bash
+https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://YOUR-APP.onrender.com/api/webhook
+```
+
+`render.yaml` already included hai.
+
+---
 
 ### 3. Railway
-- New Project → Deploy from GitHub
-- Add variables
-- Railway auto-detects Node
 
-### 4. VPS / Any Linux
+1. [railway.app](https://railway.app) → New Project → GitHub repo
+2. Variables add karo
+3. Deploy (auto detect hota hai)
+4. Webhook:
+
 ```bash
-git clone <repo>
+https://api.telegram.org/bot<TOKEN>/setWebhook?url=https://YOUR-APP.up.railway.app/api/webhook
+```
+
+---
+
+### 4. VPS / Any Linux Server
+
+```bash
+git clone <your-repo>
 cd missti-telegram-ai-bot
+cp .env.example .env
+nano .env          # values bharo
 npm install
-# create .env
-node api/webhook.js   # for long polling you need extra code
-# OR use pm2 + webhook with nginx + certbot
+npm start
 ```
 
-> For pure webhook on VPS you still need a reverse proxy (nginx/caddy) pointing to the Node process.
+Phir nginx + certbot se HTTPS lagao aur webhook set karo.
 
-### 5. Other platforms
-Any platform that supports Node.js 18+ and can receive HTTPS webhooks works (Fly.io, DigitalOcean App Platform, Google Cloud Run, AWS Lambda + API Gateway, etc.).
-
----
-
-## 🔥 Firebase Setup
-1. Create project → Realtime Database → Start in **locked mode**
-2. Project Settings → Service Accounts → Generate new private key
-3. Copy the **entire JSON** into `FIREBASE_SERVICE_ACCOUNT_JSON`
-4. Copy Database URL into `FIREBASE_DATABASE_URL`
-
-Suggested rules (adjust as needed):
-```json
-{
-  "rules": {
-    ".read": false,
-    ".write": false
-  }
-}
+**PM2 se chalane ke liye:**
+```bash
+npm install -g pm2
+pm2 start server.js --name missti
+pm2 save
 ```
-(Bot uses Admin SDK so rules can stay locked)
 
 ---
 
-## 📸 Logger Photos
-Bot automatically rotates between these two images for logger messages:
-- https://cdn.phototourl.com/member/2026-10-27-4fa85d9f-f13a-46d4-a240-393d8ff5be28.png
-- https://cdn.phototourl.com/member/2026-10-27-e946f617-11e7-42ac-9250-828a75553972.jpg
+### 5. Other Platforms
+
+| Platform | Support | Notes |
+|----------|---------|-------|
+| **Fly.io** | ✅ | `fly launch` + env secrets |
+| **DigitalOcean App Platform** | ✅ | Node service |
+| **Google Cloud Run** | ✅ | Containerize |
+| **AWS Lambda + API Gateway** | ✅ | Serverless |
+| **Heroku** | ✅ | `npm start` |
+| **Deta Space / Cyclic** | ✅ | Similar to Vercel |
+| **Replit** | ✅ | Secrets + always-on |
+
+Almost har jagah kaam karega jahan Node.js 18+ chalta ho.
 
 ---
 
-## ⚠️ Notes
-- Grok API is paid (no free unlimited tier as of late 2026). Keep an eye on usage.
-- Group replies are intentionally short (12-15 words) so conversation stays clean.
-- Owner commands only work for the ID set in `OWNER_ID`.
-- Bot never says “I am AI”.
+## 🧠 System Prompt
+
+Poora personality prompt `prompts/system.js` mein hai.  
+Wahan se edit kar sakte ho attitude, language, rules etc.
 
 ---
 
-Made with ❤️ for the culture
+## 🛠 Admin Commands
+
+Owner only (`OWNER_ID`):
+
+```
+/admin          → Full panel
+/user           → All private users
+/group          → All groups
+/broadcast      → Groups
+/ubroadcast     → Private users
+/block /unblock
+/gblock /gunblock
+/bot on|off
+/gbot on|off
+/stats
+/kill memory
+/ukill memory
+/kill all
+```
+
+---
+
+## ⚠️ Common Issues
+
+| Error | Fix |
+|-------|-----|
+| 404 Not Found | Route `/api/webhook` check karo + redeploy |
+| 401 Unauthorized | `TELEGRAM_WEBHOOK_SECRET` hatao ya sahi secret ke saath set karo |
+| DEPLOYMENT_NOT_FOUND | Galat domain use ho raha hai |
+| Wrong response 500 | Environment variables missing / Firebase JSON galat |
+
+---
+
+## License
+
+Private / Personal use.
