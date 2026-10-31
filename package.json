@@ -1,9 +1,12 @@
 {
   "name": "missti-telegram-ai-bot",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
-  "description": "Missti Telegram AI chatbot",
+  "description": "Missti — Naughty AI Girlfriend Telegram Bot powered by Grok + Firebase",
   "main": "api/webhook.js",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "firebase-admin": "^13.0.2"
   }
