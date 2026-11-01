@@ -160,9 +160,8 @@ async function handleUpdate(update) {
 
       let history = await getGroupHistory(chatId, userId);
       let answer = await askAI(clean, history, profile, true);
-
       if (!answer || !String(answer).trim()) {
-        answer = "Haan bol na 😏";
+        throw new Error("Empty answer after all models");
       }
 
       history.push(
