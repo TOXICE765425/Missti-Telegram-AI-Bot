@@ -154,22 +154,53 @@ async function handleUpdate(update) {
     if (!isMention && !isReplyToBot && !isGreeting) return;
 
     const clean = text.replace(new RegExp("@" + botUsername, "ig"), "").trim() || "Haan bol";
-    await tg("sendChatAction", { chat_id: chatId, action: "typing" });
 
-    let history = await getGroupHistory(chatId, userId);
-    const answer = await askAI(clean, history, profile, true);
-    history.push(
-      { role: "user", text: clean, at: Date.now() },
-      { role: "assistant", text: answer, at: Date.now() }
-    );
-    await saveGroupHistory(chatId, userId, history, profile.name);
+    try {
+      await tg("sendChatAction", { chat_id: chatId, action: "typing" });
 
-    await tg("sendMessage", {
-      chat_id: chatId,
-      text: answer,
-      reply_to_message_id: msg.message_id,
-      allow_sending_without_reply: true
-    });
+      let history = await getGroupHistory(chatId, userId);
+      let answer = await askAI(clean, history, profile, true);
+
+      if (!answer || !String(answer).trim()) {
+        answer = "Haan bol na 😏";
+      }
+
+      history.push(
+        { role: "user", text: clean, at: Date.now() },
+        { role: "assistant", text: answer, at: Date.now() }
+      );
+      await saveGroupHistory(chatId, userId, history, profile.name);
+
+      // First try with reply, if fails send normal message
+      try {
+        await tg("sendMessage", {
+          chat_id: chatId,
+          text: answer,
+          reply_to_message_id: msg.message_id,
+          allow_sending_without_reply: true
+        });
+      } catch (sendErr) {
+        console.error("Group reply_to failed:", sendErr.message);
+        await tg("sendMessage", {
+          chat_id: chatId,
+          text: answer
+        });
+      }
+    } catch (err) {
+      console.error("Group reply error:", err.message);
+      try {
+        await logToChannel(
+          "⚠️ <b>Group Reply Failed</b>\n\nChat: <code>" + chatId + "</code>\nUser: <code>" + userId + "</code>\nError: <code>" + String(err.message).slice(0, 300) + "</code>",
+          false
+        );
+      } catch (e) {}
+      try {
+        await tg("sendMessage", {
+          chat_id: chatId,
+          text: "Abhi thoda issue aa gaya 😅"
+        });
+      } catch (e) {}
+    }
     return;
   }
 
