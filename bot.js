@@ -171,7 +171,7 @@ async function handleUpdate(update) {
       );
       await saveGroupHistory(chatId, userId, history, profile.name);
 
-      // First try with reply, if fails send normal message
+      // Always try to reply as slide (reply_to)
       try {
         await tg("sendMessage", {
           chat_id: chatId,
@@ -180,26 +180,16 @@ async function handleUpdate(update) {
           allow_sending_without_reply: true
         });
       } catch (sendErr) {
-        console.error("Group reply_to failed:", sendErr.message);
-        await tg("sendMessage", {
-          chat_id: chatId,
-          text: answer
-        });
+        // fallback without reply
+        await tg("sendMessage", { chat_id: chatId, text: answer });
       }
     } catch (err) {
       console.error("Group reply error:", err.message);
+      // Structured logger error (same style as private errors)
       try {
-        await logToChannel(
-          "⚠️ <b>Group Reply Failed</b>\n\nChat: <code>" + chatId + "</code>\nUser: <code>" + userId + "</code>\nError: <code>" + String(err.message).slice(0, 300) + "</code>",
-          false
-        );
+        await logError(err, { fn: "group_reply", msg });
       } catch (e) {}
-      try {
-        await tg("sendMessage", {
-          chat_id: chatId,
-          text: "Abhi thoda issue aa gaya 😅"
-        });
-      } catch (e) {}
+      // Do NOT spam group with error message every time
     }
     return;
   }
