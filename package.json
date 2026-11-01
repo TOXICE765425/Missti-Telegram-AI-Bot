@@ -1,0 +1,17 @@
+{
+  "name": "missti-telegram-ai-bot",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Missti AI Girlfriend Bot - Groq + Firebase (Render/Railway/VPS/Heroku)",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.0.2"
+  }
+}
