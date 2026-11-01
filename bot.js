@@ -93,9 +93,11 @@ async function handleUpdate(update) {
     const me = await tg("getMe");
     const keyboard = {
       inline_keyboard: [
-        [{ text: "➕ Add Your Group", url: `https://t.me/${me.username}?startgroup=true` }],
-        [{ text: "💬 Support", url: config.supportUrl }],
-        [{ text: "👨‍💻 Coder", url: `tg://user?id=${config.ownerId}` }]
+        [{ text: "➕ Add To Your Group", url: "https://t.me/" + me.username + "?startgroup=true" }],
+        [
+          { text: "💬 Support", url: config.supportUrl },
+          { text: "🧑‍💻 Coder", url: "tg://user?id=" + config.ownerId }
+        ]
       ]
     };
 
