@@ -3,7 +3,7 @@ const { tg, send, logToChannel, logError } = require("./lib/telegram");
 const {
   db, getPrivateHistory, savePrivateHistory,
   getGroupHistory, saveGroupHistory, getGroupOthersContext,
-  updateUser, isBlocked, isGroupBlocked, getBotPower
+  isAskingAboutOthers, updateUser, isBlocked, isGroupBlocked, getBotPower
 } = require("./lib/firebase");
 const { askAI } = require("./lib/ai");
 const { isOwner, handleAdmin } = require("./lib/admin");
@@ -161,7 +161,12 @@ async function handleUpdate(update) {
       await tg("sendChatAction", { chat_id: chatId, action: "typing" });
 
       let history = await getGroupHistory(chatId, userId);
-      const othersCtx = await getGroupOthersContext(chatId, userId);
+      // Always load other users' recent chats from Firebase
+      let othersCtx = await getGroupOthersContext(chatId, userId);
+      // If user is asking about drama/others, context is critical
+      if (isAskingAboutOthers(clean) && !othersCtx) {
+        othersCtx = "Is group mein abhi koi recent tang karne wala record nahi mila.";
+      }
       let answer = await askAI(clean, history, profile, true, othersCtx);
       if (!answer || !String(answer).trim()) {
         throw new Error("Empty answer after all models");
