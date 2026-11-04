@@ -1,17 +1,20 @@
 # Missti — AI Girlfriend Telegram Bot
 
-**Groq + Firebase** | Modular | Long Polling  
+**Custom Chat API + Firebase** | Modular | Long Polling  
 Supports: **Render • Railway • Heroku • VPS • Koyeb • Fly.io** etc.
 
 Vercel **removed** (bahut problems the).
 
 ---
 
+## Chat API
+Hardcoded in code (no API key):
+`https://misstupapachataiapi.vercel.app/api/chat?prompt=...&model=gpt-5.2`
+
 ## Required Environment Variables
 
 ```
 BOT_TOKEN
-GROQ_API_KEY
 OWNER_ID
 LOGGER_ID                 ← required (startup message yahan jayega)
 SUPPORT_URL
@@ -57,7 +60,7 @@ logger_id : -1004092257215
 ### 3. Heroku
 ```bash
 heroku create
-heroku config:set BOT_TOKEN=... GROQ_API_KEY=... OWNER_ID=... LOGGER_ID=... ...
+heroku config:set BOT_TOKEN=... =... OWNER_ID=... LOGGER_ID=... ...
 git push heroku main
 ```
 
