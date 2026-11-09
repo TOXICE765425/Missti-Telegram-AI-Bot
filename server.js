@@ -27,7 +27,7 @@ async function pollOnce() {
   const updates = await tg("getUpdates", {
     offset,
     timeout: 25,
-    allowed_updates: ["message", "edited_message", "my_chat_member"]
+    allowed_updates: ["message", "edited_message", "my_chat_member", "callback_query"]
   });
 
   consecutiveErrors = 0;
