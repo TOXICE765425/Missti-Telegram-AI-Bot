@@ -10,6 +10,7 @@ const {
 const { askAI } = require("./lib/ai");
 const { isOwner, handleAdmin, helpCommandsText } = require("./lib/admin");
 const { handleModeration, onGroupMessageExtras, moderationHelpText } = require("./lib/moderation");
+const { sendHelpMenu, handleHelpCallback } = require("./lib/helpmenu");
 
 const ADULT_REGEX = /\b(sex|sexy|nude|nudes|boobs|breast|pussy|lund|lawda|lawde|chod|chud|chudai|sambhog|intimate|18\+|adult|horn|horny|cum|suck|blowjob|bj|bed|raat|nangi|kapde\s*uto|kiss\s*me|make\s*out)\b/i;
 
@@ -116,11 +117,30 @@ async function handleUpdate(update) {
   // Inline button callbacks
   if (update.callback_query) {
     const cq = update.callback_query;
+    // Rose-style help menu (edit same message)
+    if (cq.data && cq.data.startsWith("help:")) {
+      await handleHelpCallback(cq);
+      return;
+    }
     if (cq.data === "help_commands") {
       try {
         await tg("answerCallbackQuery", { callback_query_id: cq.id });
-        await send(cq.message.chat.id, helpCommandsText(), { parse_mode: "HTML" });
+        // Edit start message into help menu if possible, else send
+        try {
+          const p = require("./lib/helpmenu").page("home");
+          await tg("editMessageText", {
+            chat_id: cq.message.chat.id,
+            message_id: cq.message.message_id,
+            text: p.text,
+            parse_mode: "HTML",
+            reply_markup: p.reply_markup,
+            disable_web_page_preview: true
+          });
+        } catch (e) {
+          await sendHelpMenu(cq.message.chat.id);
+        }
       } catch (e) {}
+      return;
     }
     return;
   }
@@ -303,7 +323,7 @@ async function handleUpdate(update) {
   }
 
   if (cmd === "help" || cmd === "helpcommands" || cmd === "commands") {
-    await send(chatId, helpCommandsText(), { parse_mode: "HTML" });
+    await sendHelpMenu(chatId);
     return;
   }
 
